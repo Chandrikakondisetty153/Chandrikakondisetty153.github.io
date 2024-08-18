@@ -11,26 +11,31 @@ document.querySelectorAll('nav ul li a').forEach(anchor => {
     });
 });
 
-// Scroll-triggered animations
+// Scroll-triggered animations and active link highlighting
 window.addEventListener('scroll', function() {
     const sections = document.querySelectorAll('section');
+    const navLinks = document.querySelectorAll('nav ul li a');
+
     sections.forEach(section => {
-        const sectionTop = section.getBoundingClientRect().top;
-        const triggerPoint = window.innerHeight / 1.3; // Adjust this ratio as needed
-        if (sectionTop < triggerPoint) {
+        const sectionTop = section.getBoundingClientRect().top + window.pageYOffset - 50;
+        const sectionHeight = section.offsetHeight;
+        const scrollPos = window.pageYOffset;
+
+        // Scroll-triggered animations
+        if (scrollPos >= sectionTop - window.innerHeight / 1.3) {
             section.classList.add('visible');
         } else {
             section.classList.remove('visible');
         }
+
+        // Highlighting active navigation link
+        if (scrollPos >= sectionTop && scrollPos < sectionTop + sectionHeight) {
+            navLinks.forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('href').substring(1) === section.id) {
+                    link.classList.add('active');
+                }
+            });
+        }
     });
-});
-
-// Example animation: Fade-in effect
-document.querySelectorAll('section').forEach(section => {
-    section.style.opacity = 0;
-    section.style.transition = 'opacity 1s ease-out';
-});
-
-document.querySelectorAll('.visible').forEach(section => {
-    section.style.opacity = 1;
 });
